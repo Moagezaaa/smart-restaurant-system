@@ -15,7 +15,6 @@ app.get("/tables", async (req, res) => {
   const [rows] = await pool.query("SELECT * FROM qr_codes");
   res.json(rows);
 });
-
 (async () => {
   await initDB();
 
