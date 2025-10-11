@@ -1,0 +1,10 @@
+const router=require("express").Router();
+const controllers=require("../controllers/dishes");
+router.get("/getAllDishes",controllers.getAllDishes);
+router.get("/getAvailableDishes",controllers.getAvailableDishes);
+router.get("/getNotAvailableDishes",controllers.getNotAvailableDishes);
+router.post("/addDish",controllers.addDish);
+router.delete("/deleteDish",controllers.deleteDish);
+router.put("/Available",controllers.Available);
+router.put("/NotAvailable",controllers.NotAvailable);
+module.exports=router;

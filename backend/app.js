@@ -3,18 +3,13 @@ const { pool, initDB } = require("./config/db");
 const { getLocalIP } = require("./utils/network");
 const { generateQRCodes } = require("./services/qrService");
 const { makeZip } = require("./services/zipService");
-
+const cors = require('cors');
+require('dotenv').config();
 const app = express();
-
-app.get("/table/:id", (req, res) => {
-  const tableId = req.params.id;
-  res.send(`🍽️ Welcome! This is Table ${tableId}. Place your order here.`);
-});
-
-app.get("/tables", async (req, res) => {
-  const [rows] = await pool.query("SELECT * FROM qr_codes");
-  res.json(rows);
-});
+app.use(express.json());
+app.use(cors());
+const dishes = require("./routes/dishes");
+app.use("/api/dishes", dishes);
 (async () => {
   await initDB();
 

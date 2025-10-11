@@ -1,5 +1,6 @@
 require("dotenv").config();
 const mysql = require("mysql2/promise");
+const asyncWrap = require('../middlewares/asyncWrapper');
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -11,16 +12,28 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
-async function initDB() {
+ async function initDB() {
   const conn = await pool.getConnection();
   try {
+    
     await conn.query(`DROP TABLE IF EXISTS qr_codes`);
+    // await conn.query(`DROP TABLE IF EXISTS dishes`);
+
     await conn.query(`
       CREATE TABLE IF NOT EXISTS qr_codes (
         table_number INT  PRIMARY KEY,
         url VARCHAR(255),
         file_path VARCHAR(255)
       )
+    `);
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS dishes (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255),
+        description VARCHAR(255),
+        price DECIMAL(10, 2),
+        is_available BOOLEAN 
+       )
     `);
     console.log("✅ Database initialized successfully!");
   } catch (err) {
