@@ -1,5 +1,7 @@
 const router=require("express").Router();
 const controllers=require("../controllers/dishes");
+const verifyToken = require("../middlewares/verifyToken");
+router.use(verifyToken);
 router.get("/getAllDishes",controllers.getAllDishes);
 router.get("/getAvailableDishes",controllers.getAvailableDishes);
 router.get("/getNotAvailableDishes",controllers.getNotAvailableDishes);

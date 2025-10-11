@@ -8,8 +8,13 @@ require('dotenv').config();
 const app = express();
 app.use(express.json());
 app.use(cors());
+const admin = require("./routes/admin");
 const dishes = require("./routes/dishes");
+app.use("/api/admin", admin);
 app.use("/api/dishes", dishes);
+app.get("/", (req, res) => {
+  res.send("Welcome to the Restaurant API");
+});
 (async () => {
   await initDB();
 
@@ -19,7 +24,7 @@ app.use("/api/dishes", dishes);
   await generateQRCodes(totalCodes, localIP);
   makeZip();
 
-  app.listen(3000, "0.0.0.0", () => {
-    console.log(`🚀 Server running on http://${localIP}:3000`);
+  app.listen(process.env.PORT, "0.0.0.0", () => {
+    console.log(`🚀 Server running on http://${localIP}:${process.env.PORT}`);
   });
 })();
