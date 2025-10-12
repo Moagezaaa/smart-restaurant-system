@@ -16,7 +16,7 @@ const pool = mysql.createPool({
   const conn = await pool.getConnection();
   try {
     
-    await conn.query(`DROP TABLE IF EXISTS qr_codes`);
+    // await conn.query(`DROP TABLE IF EXISTS qr_codes`);
     // await conn.query(`DROP TABLE IF EXISTS dishes`);
     await conn.query(`
       CREATE TABLE IF NOT EXISTS qr_codes (
@@ -34,6 +34,14 @@ const pool = mysql.createPool({
         is_available BOOLEAN 
        )
     `);
+    await conn.query(`insert into dishes (name, description, price, is_available) values
+    ('Margherita Pizza', 'Classic pizza with tomato sauce, mozzarella, and basil', 8.99, true),
+    ('Caesar Salad', 'Crisp romaine lettuce with Caesar dressing, croutons, and Parmesan cheese', 6.49, true),
+    ('Spaghetti Carbonara', 'Pasta with eggs, cheese, pancetta, and pepper', 10.99, true),
+    ('Grilled Chicken Sandwich', 'Chicken breast with lettuce, tomato, and mayo on a toasted bun', 7.99, true),
+    ('Chocolate Lava Cake', 'Warm chocolate cake with a gooey center, served with vanilla ice cream', 5.49, true)
+    `);
+    
     console.log("✅ Database initialized successfully!");
   } catch (err) {
     console.error("❌ Database initialization failed:", err);

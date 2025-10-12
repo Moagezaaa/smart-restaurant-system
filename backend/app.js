@@ -8,12 +8,12 @@ require("dotenv").config();
 const app = express();
 app.use(express.json());
 app.use(cors());
-
 const admin = require("./routes/admin");
 const dishes = require("./routes/dishes");
-
+const tables = require("./routes/tables");
 app.use("/api/admin", admin);
 app.use("/api/dishes", dishes);
+app.use("/table", tables);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Restaurant API");

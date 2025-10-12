@@ -4,7 +4,7 @@ const { pool } = require("../config/db");
 
 async function generateQRCodes(count, localIP) {
   const folder = "./qrs";
-  if (!fs.existsSync(folder)) fs.mkdirSync(folder);
+  if (!fs.existsSync(folder)){ fs.mkdirSync(folder);
 
   for (let i = 1; i <= count; i++) {
     const url = `http://${localIP}:3000/table/${i}`;
@@ -18,6 +18,7 @@ async function generateQRCodes(count, localIP) {
 
     console.log(`✅ Table ${i}: ${url}`);
   }
+}
 }
 
 module.exports = { generateQRCodes };
