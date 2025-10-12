@@ -8,7 +8,7 @@ const login = asyncWrap(async (req, res, next) => {
        return res.status(401).json({ status: httpStatusText.ERROR, message: 'Invalid email or password' });
     }
     const token = jwt.sign(
-  { email: process.env.ADMIN_EMAIL, name: "Admin" },process.env.JWT_SECRET, { expiresIn: '1d' }
+  { email: process.env.ADMIN_EMAIL, name: "Admin" },process.env.JWT_SECRET, { expiresIn: '1m' }
 );
 
     res.status(200).json({ status: httpStatusText.SUCCESS, data: 'Login successful', token });
