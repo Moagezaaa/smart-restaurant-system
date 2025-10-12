@@ -21,7 +21,6 @@ app.get("/", (req, res) => {
 
 (async () => {
   await initDB();
-
   const totalCodes = 10;
   const localIP = getLocalIP();
 

@@ -2,6 +2,7 @@ const fs = require("fs");
 const archiver = require("archiver");
 
 function makeZip() {
+  if(!fs.existsSync("qrcodes.zip")) {
   const output = fs.createWriteStream("qrcodes.zip");
   const archive = archiver("zip", { zlib: { level: 9 } });
 
@@ -12,6 +13,7 @@ function makeZip() {
   archive.pipe(output);
   archive.directory("qrs/", false);
   archive.finalize();
+}
 }
 
 module.exports = { makeZip };
