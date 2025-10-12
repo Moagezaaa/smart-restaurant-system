@@ -18,7 +18,6 @@ const pool = mysql.createPool({
     
     await conn.query(`DROP TABLE IF EXISTS qr_codes`);
     // await conn.query(`DROP TABLE IF EXISTS dishes`);
-
     await conn.query(`
       CREATE TABLE IF NOT EXISTS qr_codes (
         table_number INT  PRIMARY KEY,
