@@ -3,18 +3,22 @@ const { pool, initDB } = require("./config/db");
 const { getLocalIP } = require("./utils/network");
 const { generateQRCodes } = require("./services/qrService");
 const { makeZip } = require("./services/zipService");
-const cors = require('cors');
-require('dotenv').config();
+const cors = require("cors");
+require("dotenv").config();
 const app = express();
 app.use(express.json());
 app.use(cors());
+
 const admin = require("./routes/admin");
 const dishes = require("./routes/dishes");
+
 app.use("/api/admin", admin);
 app.use("/api/dishes", dishes);
+
 app.get("/", (req, res) => {
   res.send("Welcome to the Restaurant API");
 });
+
 (async () => {
   await initDB();
 
