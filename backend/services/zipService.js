@@ -13,6 +13,7 @@ function makeZip() {
   archive.pipe(output);
   archive.directory("qrs/", false);
   archive.finalize();
+
 }
 }
 

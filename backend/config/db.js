@@ -22,7 +22,8 @@ const pool = mysql.createPool({
       CREATE TABLE IF NOT EXISTS qr_codes (
         table_number INT  PRIMARY KEY,
         url VARCHAR(255),
-        file_path VARCHAR(255)
+        file_path VARCHAR(255),
+        hash_table VARCHAR(255) 
       )
     `);
     await conn.query(`
