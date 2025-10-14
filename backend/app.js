@@ -11,6 +11,8 @@ app.use(cors());
 const admin = require("./routes/admin");
 const dishes = require("./routes/dishes");
 const tables = require("./routes/tables");
+const orders = require("./routes/orders");
+app.use("/api/orders", orders);
 app.use("/api/admin", admin);
 app.use("/api/dishes", dishes);
 app.use("/table", tables);

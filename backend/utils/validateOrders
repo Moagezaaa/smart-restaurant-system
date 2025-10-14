@@ -1,0 +1,55 @@
+function validateTableNumber(table_number) {
+  return (
+    table_number != null &&
+    !isNaN(table_number) &&
+    Number.isInteger(Number(table_number)) &&
+    table_number > 0 &&
+    table_number <= 10
+  );
+}
+
+function validateItems(items) {
+  if (!Array.isArray(items) || items.length === 0) return false;
+  for (const item of items) {
+    if (!validateItem(item)) return false;
+  }
+  return true;
+}
+
+function validateItem(item) {
+  if (!item || typeof item !== "object") return false;
+  const { name, quantity, preparation_time } = item;
+  if (typeof name !== "string" || name.trim().length === 0 || name.length > 50) {
+    return false;
+  }
+  if (
+    quantity == null ||
+    isNaN(quantity) ||
+    !Number.isInteger(Number(quantity)) ||
+    quantity <= 0
+  ) {
+    return false;
+  }
+  if (
+    preparation_time == null ||
+    isNaN(preparation_time) ||
+    preparation_time < 0 ||
+    preparation_time > 600
+  ) {
+    return false;
+  }
+  return true;
+}
+
+function hasDuplicateItems(items) {
+  if (!Array.isArray(items)) return false;
+  const names = items.map((i) => i.name.trim().toLowerCase());
+  return new Set(names).size !== names.length;
+}
+
+module.exports = {
+  validateTableNumber,
+  validateItems,
+  validateItem,
+  hasDuplicateItems
+};

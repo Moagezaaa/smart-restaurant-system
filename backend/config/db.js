@@ -35,6 +35,16 @@ const pool = mysql.createPool({
         is_available BOOLEAN 
        )
     `);
+    // await conn.query(`DROP TABLE IF EXISTS orders`);
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS orders (
+        table_number INT PRIMARY KEY,
+        total_time INT,
+        items JSON,
+        ended_at TIMESTAMP 
+      )
+    `);
+
     await conn.query(`insert into dishes (name, description, price, is_available) values
     ('Margherita Pizza', 'Classic pizza with tomato sauce, mozzarella, and basil', 8.99, true),
     ('Caesar Salad', 'Crisp romaine lettuce with Caesar dressing, croutons, and Parmesan cheese', 6.49, true),

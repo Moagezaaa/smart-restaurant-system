@@ -15,7 +15,6 @@ async function generateQRCodes(count, localIP) {
     const filePath = `${folder}/table_${i}.png`;
     await QRCode.toFile(filePath, url);
 
-    // ✅ Insert table record into database
     await pool.query(
       "INSERT INTO qr_codes (table_number, url, file_path, hash_table) VALUES (?, ?, ?, ?)",
       [i, url, filePath, hash_table]
