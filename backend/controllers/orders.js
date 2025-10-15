@@ -3,7 +3,7 @@ const asyncWrap = require("../middlewares/asyncWrapper");
 const validateOrders = require("../utils/validateOrders");
 
 const createOrder = asyncWrap(async (req, res) => {
-  const { table_number, items } = req.body;
+  const { table_number, total_price,items } = req.body;
   if (!table_number || !items || !Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ error: "Invalid order data" });
   }

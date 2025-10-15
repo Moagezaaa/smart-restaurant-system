@@ -1,17 +1,22 @@
 const express = require("express");
-const { pool, initDB } = require("./config/db");
+const { pool } = require("./config/db");
+const { initDB } = require("./config/initDB"); 
 const { getLocalIP } = require("./utils/network");
 const { generateQRCodes } = require("./services/qrService");
 const { makeZip } = require("./services/zipService");
 const cors = require("cors");
 require("dotenv").config();
+
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// 🧭 Routes
 const admin = require("./routes/admin");
 const dishes = require("./routes/dishes");
 const tables = require("./routes/tables");
 const orders = require("./routes/orders");
+
 app.use("/api/orders", orders);
 app.use("/api/admin", admin);
 app.use("/api/dishes", dishes);
@@ -22,7 +27,7 @@ app.get("/", (req, res) => {
 });
 
 (async () => {
-  await initDB();
+  await initDB(); 
   const totalCodes = 10;
   const localIP = getLocalIP();
 
