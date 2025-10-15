@@ -5,23 +5,22 @@ const { getLocalIP } = require("./utils/network");
 const { generateQRCodes } = require("./services/qrService");
 const { makeZip } = require("./services/zipService");
 const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-// 🧭 Routes
 const admin = require("./routes/admin");
 const dishes = require("./routes/dishes");
 const tables = require("./routes/tables");
 const orders = require("./routes/orders");
-
 app.use("/api/orders", orders);
 app.use("/api/admin", admin);
 app.use("/api/dishes", dishes);
 app.use("/table", tables);
-
+app.use("/pictures", express.static(path.join(__dirname, "pictures")));
 app.get("/", (req, res) => {
   res.send("Welcome to the Restaurant API");
 });
