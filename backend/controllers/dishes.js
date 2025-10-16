@@ -118,7 +118,71 @@ const NotAvailable = asyncWrap(async (req, res) => {
     message: "Dish availability updated successfully",
   });
 });
+const updateImage = asyncWrap(async (req, res) => {
+  const { name } = req.body;
+  const newImage = req.file ? req.file.filename : null;
 
+  if (!validateDishes.validateName(name))
+    return res.status(400).json({ status: httpStatusText.FAIL, message: "Invalid dish name" });
+
+  if (!(await validateDishes.nameExcit(name)))
+    return res.status(400).json({ status: httpStatusText.FAIL, message: "Dish name does not exist" });
+
+  const [rows] = await pool.query("SELECT image FROM dishes WHERE name = ?", [name]);
+  const oldImageName = rows[0].image;
+
+  if (oldImageName) {
+    const oldImagePath = path.join(__dirname, "../pictures", oldImageName);
+    fs.unlink(oldImagePath, (err) => {
+      if (err) console.warn("⚠️ Failed to delete old image:", err.message);
+      else console.log(`🗑️ Deleted old image:
+  ${oldImageName}`);
+    });
+  }
+
+  await pool.query("UPDATE dishes SET image = ? WHERE name = ?", [newImage, name]);
+
+  res.status(200).json({
+    status: httpStatusText.SUCCESS,
+    message: "Dish image updated successfully",
+  });
+});
+const updatePrice = asyncWrap(async (req, res) => {
+  const { name, price } = req.body;
+
+  if (!validateDishes.validateName(name))
+    return res.status(400).json({ status: httpStatusText.FAIL, message: "Invalid dish name" });
+
+  if (!(await validateDishes.nameExcit(name)))
+    return res.status(400).json({ status: httpStatusText.FAIL, message: "Dish name does not exist" });
+
+  if (!validateDishes.validatePrice(price))
+    return res.status(400).json({ status: httpStatusText.FAIL, message: "Invalid dish price" });
+
+  await pool.query("UPDATE dishes SET price = ? WHERE name = ?", [price, name]);
+  res.status(200).json({
+    status: httpStatusText.SUCCESS,
+    message: "Dish price updated successfully",
+  });
+});
+const updateDescription = asyncWrap(async (req, res) => {
+  const { name, description } = req.body;
+
+  if (!validateDishes.validateName(name))
+    return res.status(400).json({ status: httpStatusText.FAIL, message: "Invalid dish name" });
+
+  if (!(await validateDishes.nameExcit(name)))
+    return res.status(400).json({ status: httpStatusText.FAIL, message: "Dish name does not exist" });
+
+  if (!validateDishes.validateDescription(description))
+    return res.status(400).json({ status: httpStatusText.FAIL, message: "Invalid dish description" });
+
+  await pool.query("UPDATE dishes SET description = ? WHERE name = ?", [description, name]);
+  res.status(200).json({
+    status: httpStatusText.SUCCESS,
+    message: "Dish description updated successfully",
+  });
+});
 module.exports = {
   getAllDishes,
   getAvailableDishes,
@@ -127,4 +191,7 @@ module.exports = {
   deleteDish,
   Available,
   NotAvailable,
+  updateImage,
+  updatePrice,
+  updateDescription
 };

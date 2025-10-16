@@ -9,5 +9,7 @@ router.post("/addDish", verifyToken, upload.single("image"), controllers.addDish
 router.delete("/deleteDish", verifyToken, controllers.deleteDish);
 router.put("/Available", verifyToken, controllers.Available);
 router.put("/NotAvailable", verifyToken, controllers.NotAvailable);
-
+router.put("/updateImage", verifyToken, upload.single("image"), controllers.updateImage);
+router.put("/updatePrice", verifyToken, controllers.updatePrice);
+router.put("/updateDescription", verifyToken, controllers.updateDescription);
 module.exports = router;
