@@ -4,7 +4,7 @@ const asyncWrap = require("../middlewares/asyncWrapper");
 const createDishesTable = asyncWrap(async () => {
   const conn = await pool.getConnection();
 
-  // await conn.query(`DROP TABLE IF EXISTS dishes`);
+  await conn.query(`DROP TABLE IF EXISTS dishes`);
 
   await conn.query(`
     CREATE TABLE IF NOT EXISTS dishes (

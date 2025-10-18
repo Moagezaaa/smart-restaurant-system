@@ -1,11 +1,18 @@
+// src/App.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { BrowserRouter as Router, Route, Routes } from "react-router";
+import Login from "./Login";
+import Dishes from "./Dishes";
+import AdminDashboard from "./AdminDashboard";
 
 function App() {
   const [dishes, setDishes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    Boolean(localStorage.getItem("adminToken")),
+  );
 
-  // Change this URL to match your backend IP + port
   const API_URL = "http://localhost:3000/api/dishes/getAvailableDishes";
 
   useEffect(() => {
@@ -22,30 +29,37 @@ function App() {
     fetchDishes();
   }, []);
 
-  return (
-    <div className="container py-5">
-      <h1 className="mb-4 text-center">🍽️ Available Dishes</h1>
+  // Listen to storage changes (like login/logout from Login component)
+  useEffect(() => {
+    const onStorageChange = () => {
+      setIsAuthenticated(Boolean(localStorage.getItem("adminToken")));
+    };
+    window.addEventListener("storage", onStorageChange);
+    return () => window.removeEventListener("storage", onStorageChange);
+  }, []);
 
-      {loading ? (
-        <p>Loading dishes...</p>
-      ) : dishes.length === 0 ? (
-        <p>No dishes available</p>
-      ) : (
-        <div className="row">
-          {dishes.map((dish) => (
-            <div key={dish.id} className="col-md-4 mb-4">
-              <div className="card shadow-sm h-100">
-                <div className="card-body">
-                  <h5 className="card-title">{dish.name}</h5>
-                  <p className="card-text">{dish.description}</p>
-                  <p className="card-text fw-bold">${dish.price}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+  return (
+    <Router>
+      <div className="container py-5">
+        <h1 className="mb-4 text-center">🍽️ Available Dishes</h1>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              isAuthenticated ? (
+                <AdminDashboard onLogout={() => setIsAuthenticated(false)} />
+              ) : (
+                <Dishes dishes={dishes} loading={loading} />
+              )
+            }
+          />
+          <Route
+            path="/admin/login"
+            element={<Login onLogin={() => setIsAuthenticated(true)} />}
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
