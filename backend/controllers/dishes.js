@@ -37,10 +37,7 @@ const addDish = asyncWrap(async (req, res) => {
   const image = req.file ? req.file.filename : null;
 
   if (await validateDishes.nameExcit(name)) {
-    return res.status(400).json({
-      status: httpStatusText.FAIL,
-      message: "Dish name already exists",
-    });
+    return res.status(400).json({ status: httpStatusText.FAIL, message: "Dish name already exists"});
   }
 
   if (!validateDishes.validateName(name))
@@ -57,10 +54,7 @@ const addDish = asyncWrap(async (req, res) => {
     [name, description, price, is_available, image]
   );
 
-  res.status(201).json({
-    status: httpStatusText.SUCCESS,
-    message: "Dish added successfully",
-  });
+  res.status(201).json({status: httpStatusText.SUCCESS, message: "Dish added successfully"});
 });
 
 const deleteDish = asyncWrap(async (req, res) => {
@@ -83,10 +77,7 @@ const deleteDish = asyncWrap(async (req, res) => {
   }
   await pool.query("DELETE FROM dishes WHERE name = ?", [name]);
 
-  res.status(200).json({
-    status: httpStatusText.SUCCESS,
-    message: "Dish and its image deleted successfully",
-  });
+  res.status(200).json({ status: httpStatusText.SUCCESS, message: "Dish and its image deleted successfully"});
 });
 
 const Available = asyncWrap(async (req, res) => {
@@ -98,10 +89,7 @@ const Available = asyncWrap(async (req, res) => {
     return res.status(400).json({ status: httpStatusText.FAIL, message: "Dish name does not exist" });
 
   await pool.query("UPDATE dishes SET is_available = ? WHERE name = ?", [true, name]);
-  res.status(200).json({
-    status: httpStatusText.SUCCESS,
-    message: "Dish availability updated successfully",
-  });
+  res.status(200).json({  status: httpStatusText.SUCCESS, message: "Dish availability updated successfully" });
 });
 
 const NotAvailable = asyncWrap(async (req, res) => {
@@ -113,10 +101,7 @@ const NotAvailable = asyncWrap(async (req, res) => {
     return res.status(400).json({ status: httpStatusText.FAIL, message: "Dish name does not exist" });
 
   await pool.query("UPDATE dishes SET is_available = ? WHERE name = ?", [false, name]);
-  res.status(200).json({
-    status: httpStatusText.SUCCESS,
-    message: "Dish availability updated successfully",
-  });
+  res.status(200).json({ status: httpStatusText.SUCCESS,  message: "Dish availability updated successfully"});
 });
 const updateImage = asyncWrap(async (req, res) => {
   const { name } = req.body;
@@ -135,17 +120,13 @@ const updateImage = asyncWrap(async (req, res) => {
     const oldImagePath = path.join(__dirname, "../pictures", oldImageName);
     fs.unlink(oldImagePath, (err) => {
       if (err) console.warn("⚠️ Failed to delete old image:", err.message);
-      else console.log(`🗑️ Deleted old image:
-  ${oldImageName}`);
+      else console.log(`🗑️ Deleted old image:${oldImageName}`);
     });
   }
 
   await pool.query("UPDATE dishes SET image = ? WHERE name = ?", [newImage, name]);
 
-  res.status(200).json({
-    status: httpStatusText.SUCCESS,
-    message: "Dish image updated successfully",
-  });
+  res.status(200).json({ status: httpStatusText.SUCCESS, message: "Dish image updated successfully"});
 });
 const updatePrice = asyncWrap(async (req, res) => {
   const { name, price } = req.body;
@@ -160,10 +141,7 @@ const updatePrice = asyncWrap(async (req, res) => {
     return res.status(400).json({ status: httpStatusText.FAIL, message: "Invalid dish price" });
 
   await pool.query("UPDATE dishes SET price = ? WHERE name = ?", [price, name]);
-  res.status(200).json({
-    status: httpStatusText.SUCCESS,
-    message: "Dish price updated successfully",
-  });
+  res.status(200).json({ status: httpStatusText.SUCCESS, message: "Dish price updated successfully"});
 });
 const updateDescription = asyncWrap(async (req, res) => {
   const { name, description } = req.body;
@@ -178,10 +156,7 @@ const updateDescription = asyncWrap(async (req, res) => {
     return res.status(400).json({ status: httpStatusText.FAIL, message: "Invalid dish description" });
 
   await pool.query("UPDATE dishes SET description = ? WHERE name = ?", [description, name]);
-  res.status(200).json({
-    status: httpStatusText.SUCCESS,
-    message: "Dish description updated successfully",
-  });
+  res.status(200).json({ status: httpStatusText.SUCCESS, message: "Dish description updated successfully"});
 });
 module.exports = {
   getAllDishes,
