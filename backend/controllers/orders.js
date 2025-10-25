@@ -13,9 +13,6 @@ const createOrder = asyncWrap(async (req, res) => {
   if (!validateOrders.validateItems(items)) {
     return res.status(400).json({ error: "Invalid item(s) data" });
   }
-  if (validateOrders.hasDuplicateItems(items)) {
-    return res.status(400).json({ error: "Duplicate dish names are not allowed" });
-  }
 
   let total_time = 0, lastTime = 0;
   for (let item of items) {
