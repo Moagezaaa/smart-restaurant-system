@@ -3,7 +3,7 @@ const asyncWrap = require("../middlewares/asyncWrapper");
 
 const createQrCodesTable = asyncWrap(async () => {
   const conn = await pool.getConnection();
-   
+
   await conn.query(`
     CREATE TABLE IF NOT EXISTS qr_codes (
       table_number INT PRIMARY KEY,

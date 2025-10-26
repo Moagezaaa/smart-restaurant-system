@@ -10,6 +10,13 @@ function AdminDashboard({ onLogout }) {
     price: "",
   });
   const [imageFile, setImageFile] = useState(null);
+  const [editingDish, setEditingDish] = useState(null);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    description: "",
+    price: "",
+    image: null,
+  });
 
   const token = localStorage.getItem("adminToken");
   const headers = { Authorization: `Bearer ${token}` };
@@ -65,6 +72,83 @@ function AdminDashboard({ onLogout }) {
       fetchAllDishes();
     } catch (err) {
       console.error("Error deleting dish:", err);
+    }
+  };
+
+  const startEdit = (dish) => {
+    setEditingDish(dish.name);
+    setEditForm({
+      name: dish.name,
+      description: dish.description,
+      price: dish.price,
+      image: null,
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingDish(null);
+    setEditForm({ name: "", description: "", price: "", image: null });
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "image") {
+      setEditForm((prev) => ({ ...prev, image: files[0] }));
+    } else {
+      setEditForm((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const saveEdit = async (originalName) => {
+    try {
+      // Description
+      if (editForm.description) {
+        await axios.put(
+          "http://localhost:3000/api/dishes/updateDescription",
+          { name: originalName, description: editForm.description },
+          { headers },
+        );
+      }
+
+      // Price
+      if (editForm.price) {
+        await axios.put(
+          "http://localhost:3000/api/dishes/updatePrice",
+          { name: originalName, price: editForm.price },
+          { headers },
+        );
+      }
+
+      // Image
+      if (editForm.image) {
+        const imgData = new FormData();
+        imgData.append("name", originalName);
+        imgData.append("image", editForm.image);
+        await axios.put(
+          "http://localhost:3000/api/dishes/updateImage",
+          imgData,
+          {
+            headers: { ...headers, "Content-Type": "multipart/form-data" },
+          },
+        );
+      }
+
+      // Name
+      if (editForm.name && editForm.name !== originalName) {
+        await axios.put(
+          "http://localhost:3000/api/dishes/updateName",
+          { oldName: originalName, newName: editForm.name },
+          { headers },
+        );
+      }
+
+      cancelEdit();
+      fetchAllDishes();
+    } catch (err) {
+      console.error("Error updating dish:", err);
+      alert(
+        "❌ Update failed: " + (err.response?.data?.message || err.message),
+      );
     }
   };
 
@@ -139,38 +223,124 @@ function AdminDashboard({ onLogout }) {
         </div>
       </form>
 
-      {/* Dishes List (same look as public page, plus delete) */}
+      {/* Dishes List */}
       <ul className="list-group">
         {dishes.map((dish) => (
           <li
             key={dish.id}
             className="list-group-item d-flex justify-content-between align-items-center"
           >
-            <div className="d-flex align-items-center">
-              {dish.image_url && (
-                <img
-                  src={dish.image_url}
-                  alt={dish.name}
-                  style={{
-                    width: "60px",
-                    height: "60px",
-                    objectFit: "cover",
-                    marginRight: "15px",
-                    borderRadius: "5px",
-                  }}
-                />
-              )}
-              <div>
-                <strong>{dish.name}</strong> - ${dish.price}
-                <div className="text-muted small">{dish.description}</div>
+            {editingDish === dish.name ? (
+              <div className="w-100">
+                <div className="d-flex align-items-center gap-3">
+                  {editForm.image ? (
+                    <img
+                      src={URL.createObjectURL(editForm.image)}
+                      alt="preview"
+                      style={{
+                        width: "60px",
+                        height: "60px",
+                        objectFit: "cover",
+                        borderRadius: "5px",
+                      }}
+                    />
+                  ) : (
+                    dish.image_url && (
+                      <img
+                        src={dish.image_url}
+                        alt={dish.name}
+                        style={{
+                          width: "60px",
+                          height: "60px",
+                          objectFit: "cover",
+                          borderRadius: "5px",
+                        }}
+                      />
+                    )
+                  )}
+
+                  <div className="flex-grow-1">
+                    <input
+                      className="form-control mb-2"
+                      value={editForm.name}
+                      name="name"
+                      onChange={handleEditChange}
+                    />
+                    <textarea
+                      className="form-control mb-2"
+                      value={editForm.description}
+                      name="description"
+                      onChange={handleEditChange}
+                    />
+                    <input
+                      type="number"
+                      className="form-control mb-2"
+                      value={editForm.price}
+                      name="price"
+                      onChange={handleEditChange}
+                    />
+                    <input
+                      type="file"
+                      className="form-control mb-2"
+                      accept="image/*"
+                      name="image"
+                      onChange={handleEditChange}
+                    />
+                  </div>
+
+                  <div className="d-flex flex-column gap-2">
+                    <button
+                      className="btn btn-success btn-sm"
+                      onClick={() => saveEdit(dish.name)}
+                    >
+                      💾 Save
+                    </button>
+                    <button
+                      className="btn btn-secondary btn-sm"
+                      onClick={cancelEdit}
+                    >
+                      ❌ Cancel
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-            <button
-              className="btn btn-sm btn-danger"
-              onClick={() => handleDelete(dish.name)}
-            >
-              🗑️ Delete
-            </button>
+            ) : (
+              <>
+                <div className="d-flex align-items-center">
+                  {dish.image_url && (
+                    <img
+                      src={dish.image_url}
+                      alt={dish.name}
+                      style={{
+                        width: "60px",
+                        height: "60px",
+                        objectFit: "cover",
+                        marginRight: "15px",
+                        borderRadius: "5px",
+                      }}
+                    />
+                  )}
+                  <div>
+                    <strong>{dish.name}</strong> - ${dish.price}
+                    <div className="text-muted small">{dish.description}</div>
+                  </div>
+                </div>
+                <div className="d-flex gap-2">
+                  <button
+                    className="btn btn-sm btn-warning"
+                    onClick={() => startEdit(dish)}
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button
+                    className="btn btn-sm btn-danger"
+                    onClick={() => handleDelete(dish.name)}
+                  >
+                    🗑️ Delete
+                  </button>
+                </div>
+              </>
+            )}
           </li>
         ))}
       </ul>

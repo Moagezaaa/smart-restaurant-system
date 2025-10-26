@@ -3,7 +3,7 @@ const asyncWrap = require("../middlewares/asyncWrapper");
 
 const createOrdersTable = asyncWrap(async () => {
   const conn = await pool.getConnection();
-  // await conn.query(` DROP TABLE IF EXISTS orders`);
+  await conn.query(` DROP TABLE IF EXISTS orders`);
   await conn.query(`
     CREATE TABLE IF NOT EXISTS orders (
       table_number INT PRIMARY KEY,

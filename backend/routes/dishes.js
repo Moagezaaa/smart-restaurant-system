@@ -12,4 +12,5 @@ router.put("/NotAvailable", verifyToken, controllers.NotAvailable);
 router.put("/updateImage", verifyToken, upload.single("image"), controllers.updateImage);
 router.put("/updatePrice", verifyToken, controllers.updatePrice);
 router.put("/updateDescription", verifyToken, controllers.updateDescription);
+router.put("/updateName", verifyToken, controllers.updateName);
 module.exports = router;

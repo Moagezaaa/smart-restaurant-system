@@ -1,6 +1,6 @@
 const express = require("express");
 const { pool } = require("./config/db");
-const { initDB } = require("./config/initDB"); 
+const { initDB } = require("./config/initDB");
 const { getLocalIP } = require("./utils/network");
 const { generateQRCodes } = require("./services/qrService");
 const { makeZip } = require("./services/zipService");
@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
 });
 
 (async () => {
-  await initDB(); 
+  await initDB();
   const totalCodes = 10;
   const localIP = getLocalIP();
 

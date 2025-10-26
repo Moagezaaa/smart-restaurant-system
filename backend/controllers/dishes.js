@@ -158,6 +158,22 @@ const updateDescription = asyncWrap(async (req, res) => {
   await pool.query("UPDATE dishes SET description = ? WHERE name = ?", [description, name]);
   res.status(200).json({ status: httpStatusText.SUCCESS, message: "Dish description updated successfully"});
 });
+const updateName = asyncWrap(async (req, res) => {
+  const { oldName, newName } = req.body;
+
+  if (!validateDishes.validateName(oldName) || !validateDishes.validateName(newName))
+    return res.status(400).json({ status: httpStatusText.FAIL, message: "Invalid dish name" });
+
+  if (!(await validateDishes.nameExcit(oldName)))
+    return res.status(400).json({ status: httpStatusText.FAIL, message: "Dish name does not exist" });
+
+  if (await validateDishes.nameExcit(newName))
+    return res.status(400).json({ status: httpStatusText.FAIL, message: "New name already exists" });
+
+  await pool.query("UPDATE dishes SET name = ? WHERE name = ?", [newName, oldName]);
+
+  res.status(200).json({ status: httpStatusText.SUCCESS, message: "Dish name updated successfully" });
+});
 module.exports = {
   getAllDishes,
   getAvailableDishes,
@@ -168,5 +184,6 @@ module.exports = {
   NotAvailable,
   updateImage,
   updatePrice,
-  updateDescription
+  updateDescription,
+  updateName
 };
